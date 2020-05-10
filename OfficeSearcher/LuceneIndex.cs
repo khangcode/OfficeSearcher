@@ -68,7 +68,7 @@ namespace OfficeSearcher
         public void BuildIndex(string sBody, string sFileName, string sLastWriteTime)
         {
             Lucene.Net.Documents.Document doc = new Document();
-            doc.Add(new Field("Body", sBody + " " + sFileName, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field("Body", sBody + " " + sFileName.Replace(@"\", " ").Replace(".", " "), Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field("FileName", sFileName + string.Empty, Field.Store.YES, Field.Index.NOT_ANALYZED));
             doc.Add(new Field("LastWriteTime", sLastWriteTime, Field.Store.YES, Field.Index.NOT_ANALYZED));
             writer.AddDocument(doc);
