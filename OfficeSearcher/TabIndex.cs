@@ -83,12 +83,14 @@ namespace OfficeSearcher
                 if (docFiles.Count != 0)
                 {
                     Word2Txt word2Txt = new Word2Txt();
+                    int currDoc = 0;
                     foreach (FileMeta fileMeta in docFiles)
                     {
+                        currDoc++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing DOC file ({0}/{1}): {2}", currDoc, docFiles.Count, fileMeta.FileName));
                         string[] sBody = word2Txt.GetText(fileMeta.FileName);
                         if (string.IsNullOrEmpty(sBody[1]))
                         {
-                            BgWorker1.ReportProgress(1, string.Format("Indexing file: {0}", fileMeta.FileName));
                             luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
                             
                         }
@@ -99,6 +101,7 @@ namespace OfficeSearcher
                         }
                     }
                     word2Txt.QuitApp();
+                    luceneIndex.Save();
                     //ParallelLoopResult docResult = Parallel.ForEach(docFiles, (fileMeta) =>
                     //{
                     //    string[] sBody = word2Txt.GetText(fileMeta.FileName);
@@ -122,13 +125,15 @@ namespace OfficeSearcher
 
                 if (xlsFiles.Count != 0)
                 {
+                    int currXls = 0;
                     Excel2Txt excel2Txt = new Excel2Txt();
                     foreach (FileMeta fileMeta in xlsFiles)
                     {
+                        currXls++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing XLS file ({0}/{1}): {2}", currXls, xlsFiles.Count, fileMeta.FileName)); ;
                         string[] sBody = excel2Txt.GetText(fileMeta.FileName);
                         if (string.IsNullOrEmpty(sBody[1]))
                         {
-                            BgWorker1.ReportProgress(1, string.Format("Indexing file: {0}", fileMeta.FileName));
                             luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
                         }
                         else
@@ -138,6 +143,7 @@ namespace OfficeSearcher
                         }
                     }
                     excel2Txt.QuitApp();
+                    luceneIndex.Save();
                     //ParallelLoopResult xlsResult = Parallel.ForEach(xlsFiles, (fileMeta) =>
                     //{
                     //    string[] sBody = excel2Txt.GetText(fileMeta.FileName);
@@ -161,13 +167,15 @@ namespace OfficeSearcher
 
                 if (pptFiles.Count != 0)
                 {
+                    int currPpt = 0;
                     Ppt2Txt ppt2Txt = new Ppt2Txt();
                     foreach (FileMeta fileMeta in pptFiles)
                     {
+                        currPpt++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing PPT file ({0}/{1}): {2}", currPpt, pptFiles.Count, fileMeta.FileName));
                         string[] sBody = ppt2Txt.GetText(fileMeta.FileName);
                         if (string.IsNullOrEmpty(sBody[1]))
                         {
-                            BgWorker1.ReportProgress(1, string.Format("Indexing file: {0}", fileMeta.FileName));
                             luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
                         }
                         else
@@ -177,6 +185,7 @@ namespace OfficeSearcher
                         }
                     }
                     ppt2Txt.QuitApp();
+                    luceneIndex.Save();
                     //ParallelLoopResult pptResult = Parallel.ForEach(xlsFiles, (fileMeta) =>
                     //{
                     //    string[] sBody = ppt2Txt.GetText(fileMeta.FileName);
@@ -200,9 +209,11 @@ namespace OfficeSearcher
 
                 if (otherFiles.Count != 0)
                 {
+                    int currFile = 0;
                     foreach (var fileMeta in otherFiles)
                     {
-                        BgWorker1.ReportProgress(1, string.Format("Indexing file name: {0}", fileMeta.FileName));
+                        currFile++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing FILE_NAME ({0}/{1}): {2}", currFile, otherFiles.Count, fileMeta.FileName));
                         luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
                     }
 
