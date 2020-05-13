@@ -80,6 +80,28 @@ namespace OfficeSearcher
                     luceneIndex.DeleteDocumentsFrom(DFrom);
                 }
 
+                if (otherFiles.Count != 0)
+                {
+                    int currFile = 0;
+                    foreach (var fileMeta in otherFiles)
+                    {
+                        currFile++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing FILE_NAME ({0}/{1}): {2}", currFile, otherFiles.Count, fileMeta.FileName));
+                        luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
+                    }
+
+                    //ParallelLoopResult otherResult = Parallel.ForEach(otherFiles, (fileMeta) =>
+                    //{
+                    //    luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
+                    //    BgWorker1.ReportProgress(1, string.Format("Indexing file name: {0}", fileMeta.FileName));
+                    //});
+                    //if (otherResult.IsCompleted)
+                    //{
+                    //    luceneIndex.Save();
+                    //}
+                }
+                luceneIndex.Save();
+
                 if (docFiles.Count != 0)
                 {
                     Word2Txt word2Txt = new Word2Txt();
@@ -120,48 +142,6 @@ namespace OfficeSearcher
                     //{
                     //    luceneIndex.Save();
                     //    word2Txt.QuitApp();
-                    //}
-                }
-
-                if (xlsFiles.Count != 0)
-                {
-                    int currXls = 0;
-                    Excel2Txt excel2Txt = new Excel2Txt();
-                    foreach (FileMeta fileMeta in xlsFiles)
-                    {
-                        currXls++;
-                        BgWorker1.ReportProgress(1, string.Format("Indexing XLS file ({0}/{1}): {2}", currXls, xlsFiles.Count, fileMeta.FileName)); ;
-                        string[] sBody = excel2Txt.GetText(fileMeta.FileName);
-                        if (string.IsNullOrEmpty(sBody[1]))
-                        {
-                            luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
-                        }
-                        else
-                        {
-                            BgWorker1.ReportProgress(1, string.Format("Error: {0}", sBody[1]));
-                            luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
-                        }
-                    }
-                    excel2Txt.QuitApp();
-                    luceneIndex.Save();
-                    //ParallelLoopResult xlsResult = Parallel.ForEach(xlsFiles, (fileMeta) =>
-                    //{
-                    //    string[] sBody = excel2Txt.GetText(fileMeta.FileName);
-                    //    if (string.IsNullOrEmpty(sBody[1]))
-                    //    {
-                    //        luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
-                    //        BgWorker1.ReportProgress(1, string.Format("Indexing file: {0}", fileMeta.FileName));
-                    //    }
-                    //    else
-                    //    {
-                    //        luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
-                    //        BgWorker1.ReportProgress(1, string.Format("Error: {0}", sBody[1]));
-                    //    }
-                    //});
-                    //if (xlsResult.IsCompleted)
-                    //{
-                    //    luceneIndex.Save();
-                    //    excel2Txt.QuitApp();
                     //}
                 }
 
@@ -207,24 +187,45 @@ namespace OfficeSearcher
                     //}
                 }
 
-                if (otherFiles.Count != 0)
+                if (xlsFiles.Count != 0)
                 {
-                    int currFile = 0;
-                    foreach (var fileMeta in otherFiles)
+                    int currXls = 0;
+                    Excel2Txt excel2Txt = new Excel2Txt();
+                    foreach (FileMeta fileMeta in xlsFiles)
                     {
-                        currFile++;
-                        BgWorker1.ReportProgress(1, string.Format("Indexing FILE_NAME ({0}/{1}): {2}", currFile, otherFiles.Count, fileMeta.FileName));
-                        luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
+                        currXls++;
+                        BgWorker1.ReportProgress(1, string.Format("Indexing XLS file ({0}/{1}): {2}", currXls, xlsFiles.Count, fileMeta.FileName)); ;
+                        string[] sBody = excel2Txt.GetText(fileMeta.FileName);
+                        if (string.IsNullOrEmpty(sBody[1]))
+                        {
+                            luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
+                        }
+                        else
+                        {
+                            BgWorker1.ReportProgress(1, string.Format("Error: {0}", sBody[1]));
+                            luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
+                        }
                     }
-
-                    //ParallelLoopResult otherResult = Parallel.ForEach(otherFiles, (fileMeta) =>
+                    excel2Txt.QuitApp();
+                    luceneIndex.Save();
+                    //ParallelLoopResult xlsResult = Parallel.ForEach(xlsFiles, (fileMeta) =>
                     //{
-                    //    luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
-                    //    BgWorker1.ReportProgress(1, string.Format("Indexing file name: {0}", fileMeta.FileName));
+                    //    string[] sBody = excel2Txt.GetText(fileMeta.FileName);
+                    //    if (string.IsNullOrEmpty(sBody[1]))
+                    //    {
+                    //        luceneIndex.BuildIndex(sBody[0], fileMeta.FileName, fileMeta.LastWriteTime);
+                    //        BgWorker1.ReportProgress(1, string.Format("Indexing file: {0}", fileMeta.FileName));
+                    //    }
+                    //    else
+                    //    {
+                    //        luceneIndex.BuildIndex(string.Empty, fileMeta.FileName, fileMeta.LastWriteTime);
+                    //        BgWorker1.ReportProgress(1, string.Format("Error: {0}", sBody[1]));
+                    //    }
                     //});
-                    //if (otherResult.IsCompleted)
+                    //if (xlsResult.IsCompleted)
                     //{
                     //    luceneIndex.Save();
+                    //    excel2Txt.QuitApp();
                     //}
                 }
                 luceneIndex.SaveAndDispose();
@@ -243,6 +244,7 @@ namespace OfficeSearcher
             TxtStatus.AppendText("Complete!");
             BtnIndexFrom.Enabled = true;
             BtnIndexAll.Enabled = true;
+            (this.Parent.Parent as Form1).IsIndexing = false;
         }
 
         private void BtnIndexFrom_Click(object sender, EventArgs e)
@@ -255,6 +257,7 @@ namespace OfficeSearcher
 
         private void BtnIndexAll_Click(object sender, EventArgs e)
         {
+            (this.Parent.Parent as Form1).IsIndexing = true;
             TxtStatus.Clear();
             BgWorker1.RunWorkerAsync(DateTime.MinValue);
             BtnIndexFrom.Enabled = false;

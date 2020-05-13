@@ -173,7 +173,6 @@ namespace OfficeSearcher
         {
             StringBuilder sb = new StringBuilder();
             int totalDoc = reader.NumDocs();
-            string[] result = new string[totalDoc + 1];
             sb.Append("Total indexed files: ");
             sb.Append(totalDoc.ToString());
             sb.Append("<br><br>");

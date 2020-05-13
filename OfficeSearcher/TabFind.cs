@@ -26,6 +26,7 @@ namespace OfficeSearcher
             if ("cmd:thongke" == TxtWhere.Text)
             {
                 webBrowser1.DocumentText = search.GetAllDoc();
+                toolStripStatusLabel1.Text = "   All file names";
             }
             else
             {
