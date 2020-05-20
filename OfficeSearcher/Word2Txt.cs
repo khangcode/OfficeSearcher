@@ -45,6 +45,11 @@ namespace OfficeSearcher
             object fileToOpen = sFileName;
             try
             {
+                if (app == null)
+                {
+                    app = new Microsoft.Office.Interop.Word.Application();
+                    app.Visible = false;
+                }
                 doc = app.Documents.Open(
                                          ref fileToOpen,
                                          ref missing,

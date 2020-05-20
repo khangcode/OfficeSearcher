@@ -24,6 +24,12 @@ namespace OfficeSearcher
             string err = string.Empty;
             try
             {
+                if (excelApp == null)
+                {
+                    excelApp = new Excel.Application();
+                    excelApp.Visible = false;
+                }
+
                 wb = excelApp.Workbooks.Open(sExcelFile, 0, true, 5, "", "", true, Microsoft.Office.Interop.Excel.XlPlatform.xlWindows, "\t", false, false, 0, true, 1, 0);
                 for (int j = 1; j <= wb.Sheets.Count; j++) //Index bat dau bang 1, thay vi 0
                 {

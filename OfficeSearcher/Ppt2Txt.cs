@@ -36,6 +36,10 @@ namespace OfficeSearcher
             string err = string.Empty;
             try
             {
+                if (pptApp == null)
+                {
+                    pptApp = new PowerPoint.Application();
+                }
                 pp = pptApp.Presentations.Open(sFileName, OfficeCore.MsoTriState.msoTrue, OfficeCore.MsoTriState.msoFalse, OfficeCore.MsoTriState.msoFalse);
                 foreach (Microsoft.Office.Interop.PowerPoint.Slide slide in pp.Slides)
                 {
